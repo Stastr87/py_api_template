@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-cors = "*"
+waitress = "*"
+flask-restx = "*"
+black = "*"
+isort = "*"
+mypy = "*"
+pylint = "*"
+flake8 = "*"
+pydantic = "*"
+
+[dev-packages]
+black = "==24.10.0"
+isort = "==5.13.2"
+mypy = "==1.13.0"
+pylint = "==3.3.1"
+flake8 = "==7.1.1"
+
+[requires]
+python_version = "3.12"
