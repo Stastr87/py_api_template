@@ -22,12 +22,10 @@ class Hello(Resource):
     """HTTP method described in self doc interface swagger"""
 
     @cross_origin()
-    @default_ns.doc("Returns hello greetings")
-    @default_ns.marshal_with(
-        default_ns.model("hello_return_schema", HELLO_RETURN_SCHEMA)
-    )
+    @default_ns.doc("returns hello schema")
+    @default_ns.marshal_with(default_ns.model("hello schema", HELLO_RETURN_SCHEMA))
     def get(self):
-        """GET request returns greetings to user"""
+        """request returns greetings to user"""
 
         return_msg = "Hello world!"
 

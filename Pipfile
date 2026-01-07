@@ -9,6 +9,7 @@ flask-cors = "==6.0.2"
 waitress = "==3.0.2"
 flask-restx = "==1.3.2"
 pydantic = "==2.12.5"
+flask-jwt-extended = "*"
 
 [dev-packages]
 black = "==25.12.0"

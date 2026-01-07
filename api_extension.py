@@ -2,6 +2,7 @@
 
 from flask_restx import Api
 
+from web_plugin.api_package.auth_ns.ns import auth_ns
 from web_plugin.api_package.default_ns.ns import default_ns
 
 open_api = Api(
@@ -12,3 +13,4 @@ open_api = Api(
 )
 
 open_api.add_namespace(default_ns, path="/api/v1")
+open_api.add_namespace(auth_ns, path="/api/v1")
