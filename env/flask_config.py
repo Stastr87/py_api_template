@@ -30,4 +30,5 @@ def set_custom_config(app: Flask):
     app.config["RESTX_MASK_SWAGGER"] = False
 
     # Authorisation settings
-    app.config["JWT_SECRET_KEY"] = "lopata"  # Change this to a secure secret key
+    # Change this to a secure secret key
+    app.config["JWT_SECRET_KEY"] = "lopata"

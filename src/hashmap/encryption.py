@@ -1,28 +1,36 @@
-"""encryption"""
+"""Encryption methods for hashing passwords."""
 
 import hashlib
 import os
 
 
-def encryption_srt(string: str) -> bytes:
-    """encrypt provided string"""
-
-    # Create salt - a cryptographically secure random string
-    # that is added to the password before it is hashed.
+def hash_password_with_salt(password) -> tuple[bytes, bytes]:
+    """Generate salt and hash password."""
+    # Генерация случайной соли
     salt = os.urandom(32)
 
-    # Create hash
-    hash_str = string.encode()
-    hash_obj = hashlib.pbkdf2_hmac("sha256", hash_str, salt, 100000)
+    # Хеширование пароля с солью
+    password_hash = hashlib.pbkdf2_hmac(
+        "sha256",  # Используемый алгоритм хеширования
+        password.encode("utf-8"),  # Пароль в виде байтов
+        salt,  # Соль
+        100000,  # Количество итераций
+        dklen=128,  # Длина получаемого ключа в байтах
+    )
 
-    # Create encrypted string
-    encrypted_srt = salt + hash_obj
-    return encrypted_srt
+    # Сохраняем соль вместе с хешем для последующей верификации
+    return salt, password_hash
 
 
-def verify_string(encrypted_str, provided_str) -> bool:
-    """Returns True if the string matches the encoded string"""
-    salt = encrypted_str[:32]  # Первые 32 байта — соль
-    stored_hash = encrypted_str[32:]  # Остальное — хеш
-    hash_obj = hashlib.pbkdf2_hmac("sha256", provided_str.encode(), salt, 100000)
-    return hash_obj == stored_hash
+def verify_password(
+    stored_salt: bytes, stored_password_hash: bytes, provided_password: str
+) -> bool:
+    """Verify provided password against stored password."""
+
+    password_hash = hashlib.pbkdf2_hmac(
+        "sha256", provided_password.encode("utf-8"), stored_salt, 100000, dklen=128
+    )
+
+    # Сравнение хешей
+
+    return password_hash == stored_password_hash

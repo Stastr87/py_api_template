@@ -1,9 +1,18 @@
 """Authorization namespace"""
 
+from flask import request
 from flask_cors import cross_origin
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_restx import Namespace, Resource
 
+from src.users.users import is_user_exists, save_session
+from web_plugin.api_package.auth_ns.const import (
+    IS_SUCCESS_FIELD,
+    LOGIN_FIELD,
+    MESSAGE_FIELD,
+    PASSWORD_FIELD,
+    TOKEN_FIELD,
+)
 from web_plugin.api_package.auth_ns.ns_schemas import (
     LOGIN_POST_SCHEMA,
     LOGIN_RESP_SCHEMA,
@@ -13,7 +22,9 @@ from web_plugin.api_package.auth_ns.urls import (
     DELETE_LOGOUT_URL,
     POST_LOGIN_URL,
 )
+from web_plugin.api_package.auth_ns.utils.check_pas import check_pas
 from web_plugin.api_package.exceptions.exceptions import ApiExceptions
+from web_plugin.api_package.utils.errors_enum import Errors
 
 auth_ns = Namespace("Authorization", description="Authorization methods")
 
@@ -29,20 +40,47 @@ class Login(Resource):
     def post(self):
         """request returns authorization token"""
 
-        username = "Получить из тела POST запроса"
+        username = request.get_json().get(LOGIN_FIELD)
+        password = request.get_json().get(PASSWORD_FIELD)
 
-        access_token = create_access_token(identity=username)
-        return_body = {"login": None, "token": access_token, "is_success": True}
-        return return_body, 200
+        print("username, password")
+        print(username, password)
 
-        # try:
-        #     return_body = {"login": None, "tocken": None}
-        #     return return_body, 200
-        #
-        # except ValidationError as err:
-        #     print(err)
-        #     return_body = {"msg": "incorrect characters were received", "err": True}
-        #     return return_body, 400
+        # Check user if exists
+        if is_user_exists(username):
+            is_password_correct = check_pas(username, password)
+            if is_password_correct:
+                access_token = create_access_token(identity=username)
+                save_session(username, access_token)
+                return_body = {
+                    LOGIN_FIELD: username,
+                    TOKEN_FIELD: access_token,
+                    IS_SUCCESS_FIELD: True,
+                    MESSAGE_FIELD: None,
+                }
+                return return_body, 200
+            if not is_password_correct:
+                return_body = {
+                    LOGIN_FIELD: username,
+                    TOKEN_FIELD: None,
+                    IS_SUCCESS_FIELD: False,
+                    MESSAGE_FIELD: Errors.INVALID_PASSWORD.text(),
+                }
+                return return_body, 401
+
+        if not is_user_exists(username):
+            return_body = {
+                LOGIN_FIELD: username,
+                TOKEN_FIELD: None,
+                IS_SUCCESS_FIELD: False,
+                MESSAGE_FIELD: Errors.USER_NOT_FOUND.text(),
+            }
+            return return_body, 401
+
+        # Как сохранять токен активной сессии пользователя?
+        # Как распределять права доступа пользователей?
+
+        return {}, 400
 
 
 @auth_ns.route(DELETE_LOGOUT_URL)

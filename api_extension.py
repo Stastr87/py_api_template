@@ -10,6 +10,7 @@ open_api = Api(
     title="web app template API",
     description="swagger doc service",
     doc="/swagger",
+    authorizations={"Bearer": {"type": "apiKey", "name": "Authorization"}},
 )
 
 open_api.add_namespace(default_ns, path="/api/v1")
