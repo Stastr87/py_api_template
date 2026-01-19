@@ -20,5 +20,16 @@ def save_session(username: str, access_token: str) -> None:
     session = SessionInfo(
         username, access_token, (datetime.now() + timedelta(days=2)).isoformat()
     )
-    db.put(username, session)
+    db.restore_hash_map()
+
+    if username in db:
+        print(
+            f"{username} is already present in the database. Update token expiration time"
+        )
+        db.remove(username)
+        db.put(username, session)
+    if username not in db:
+        db.put(username, session)
+
+    db.print()
     db.store()

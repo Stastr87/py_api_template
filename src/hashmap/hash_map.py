@@ -17,6 +17,7 @@ class HashMap:
 
     def put(self, key: str, value: Any) -> None:
         """Put pair key/value into hashmap or update existing key"""
+
         index = self._hash(key)
         bucket = self.buckets[index]
 
@@ -66,3 +67,7 @@ class HashMap:
             if k == key:
                 return True
         return False
+
+    def print(self):
+        """Print hash map"""
+        print(self.buckets)

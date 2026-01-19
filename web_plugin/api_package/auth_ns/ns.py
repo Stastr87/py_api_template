@@ -43,9 +43,6 @@ class Login(Resource):
         username = request.get_json().get(LOGIN_FIELD)
         password = request.get_json().get(PASSWORD_FIELD)
 
-        print("username, password")
-        print(username, password)
-
         # Check user if exists
         if is_user_exists(username):
             is_password_correct = check_pas(username, password)
@@ -58,7 +55,9 @@ class Login(Resource):
                     IS_SUCCESS_FIELD: True,
                     MESSAGE_FIELD: None,
                 }
+
                 return return_body, 200
+
             if not is_password_correct:
                 return_body = {
                     LOGIN_FIELD: username,

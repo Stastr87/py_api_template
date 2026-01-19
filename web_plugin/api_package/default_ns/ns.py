@@ -2,7 +2,7 @@
 
 from flask import request
 from flask_cors import cross_origin
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flask_restx import Namespace, Resource
 from pydantic import ValidationError
 
@@ -32,8 +32,12 @@ class Hello(Resource):
     def get(self):
         """request returns greetings to user"""
         current_user = get_jwt_identity()
-        return_msg = "Hello world!"
 
+        jwt_data = get_jwt()  # Полный payload токена
+        print(f"User: {current_user}")
+        print(f"JWT data: {jwt_data}")
+
+        return_msg = "Hello world!"
         try:
             # Validate request params
             request_params = HelloParams(name=request.args.get("appeal"))

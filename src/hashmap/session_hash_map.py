@@ -22,19 +22,21 @@ class SessionInfoHashMap(HashMap):
     def store(self, file_path: str = SESSIONS_STORAGE):
         """save hashmap in local storage"""
 
-        for user in self.buckets:
-            if user:
-                write_data_to_csv_file(
-                    file_path,
+        session_list = []
+        for session in self.buckets:
+            if session:
+                session_list.append(
                     [
-                        [
-                            user[0][0],
-                            user[0][1].login,
-                            user[0][1].token,
-                            user[0][1].expires_in,
-                        ]
-                    ],
+                        session[0][0],
+                        session[0][1].login,
+                        session[0][1].token,
+                        session[0][1].expires_in,
+                    ]
                 )
+        write_data_to_csv_file(
+            file_path,
+            session_list,
+        )
 
     def restore_hash_map(self, file_path: str = SESSIONS_STORAGE):
         """Restore hash map from local storage"""

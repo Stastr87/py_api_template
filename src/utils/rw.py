@@ -12,10 +12,13 @@ def write_data_to_csv_file(file_path: str, data: list) -> None:
         os.makedirs(folder_name)
         time.sleep(0.1)
 
-    with open(file_path, "a", newline="", encoding="utf-8") as file:
+    with open(file_path, "w", newline="", encoding="utf-8") as file:
         file_writer = csv.writer(file, delimiter=";", lineterminator="\r")
-        for row in data:
-            file_writer.writerow(row)
+        # for row in data:
+        #     print("row")
+        #     print(row)
+        #     file_writer.writerow(row)
+        file_writer.writerows(data)
 
 
 def read_from_csv_file(file_path: str) -> list:

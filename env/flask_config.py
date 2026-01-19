@@ -1,16 +1,17 @@
 """Flask web server custom config"""
 
+from datetime import timedelta
+
 from flask import Flask
 
 
 def set_custom_config(app: Flask):
     """
     Do not remove Flask params. For Enabling/Disabling params use comments
+
+    See full doc https://flask.palletsprojects.com/en/stable/config/
     """
     app.config["CORS_HEADERS"] = "Content-Type"
-    app.config["JSON_AS_ASCII"] = False
-    app.config["JSON_SORT_KEYS"] = False
-    app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
     app.config["RESTX_MASK_SWAGGER"] = False
 
     # disable "Try it Out" for all methods
@@ -32,3 +33,5 @@ def set_custom_config(app: Flask):
     # Authorisation settings
     # Change this to a secure secret key
     app.config["JWT_SECRET_KEY"] = "lopata"
+    app.config["JWT_ALGORITHM"] = "HS256"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=2)

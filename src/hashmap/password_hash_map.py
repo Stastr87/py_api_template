@@ -21,19 +21,18 @@ class UserPasswordHashMap(HashMap):
     def store(self, file_path: str = USERS_STORAGE):
         """save hashmap in local storage"""
 
-        for item in self.buckets:
-            if item:
-
-                write_data_to_csv_file(
-                    file_path,
+        password_hash_list = []
+        for password in self.buckets:
+            if password:
+                password_hash_list.append(
                     [
-                        [
-                            item[0][0],
-                            item[0][1].salt.hex(),
-                            item[0][1].hashed_password.hex(),
-                        ]
-                    ],
+                        password[0][0],
+                        password[0][1].salt.hex(),
+                        password[0][1].hashed_password.hex(),
+                    ]
                 )
+
+        write_data_to_csv_file(file_path, password_hash_list)
 
     def restore_hash_map(self, file_path: str = USERS_STORAGE):
         """Restore hash map from local storage"""
