@@ -3,9 +3,9 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/username/project-name.svg)](https://github.com/username/project-name/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/username/project-name.svg)](https://github.com/username/project-name/network)
-[![GitHub issues](https://img.shields.io/github/issues/username/project-name.svg)](https://github.com/username/project-name/issues)
+[![GitHub stars](https://img.shields.io/github/stars/Stastr87/py_api_template.svg)](https://github.com/Stastr87/py_api_template/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Stastr87/py_api_template.svg)](https://github.com/Stastr87/py_api_template/network)
+[![GitHub issues](https://img.shields.io/github/issues/Stastr87/py_api_template.svg)](https://github.com/Stastr87/py_api_template/issues)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # 🎓 py_api_template
