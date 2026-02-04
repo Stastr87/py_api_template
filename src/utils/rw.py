@@ -14,10 +14,6 @@ def write_data_to_csv_file(file_path: str, data: list) -> None:
 
     with open(file_path, "w", newline="", encoding="utf-8") as file:
         file_writer = csv.writer(file, delimiter=";", lineterminator="\r")
-        # for row in data:
-        #     print("row")
-        #     print(row)
-        #     file_writer.writerow(row)
         file_writer.writerows(data)
 
 
@@ -29,6 +25,6 @@ def read_from_csv_file(file_path: str) -> list:
         with open(file_path, "r", encoding="utf-8") as file:
             csv_reader = csv.reader(file, delimiter=";")
             for row in csv_reader:
-                output_data.append(row)  # row будет списком значений
+                output_data.append(row)
 
     return output_data

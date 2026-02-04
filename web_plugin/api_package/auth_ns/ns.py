@@ -2,10 +2,14 @@
 
 from flask import request
 from flask_cors import cross_origin
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import (
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_restx import Namespace, Resource
 
-from src.users.users import is_user_exists, save_session
+from src.users.users import finish_session, is_user_exists, save_session
 from web_plugin.api_package.auth_ns.const import (
     IS_SUCCESS_FIELD,
     LOGIN_FIELD,
@@ -37,7 +41,7 @@ class Login(Resource):
     @auth_ns.doc("returns authorization model")
     @auth_ns.expect(auth_ns.model("login_post_schema", LOGIN_POST_SCHEMA))
     @auth_ns.marshal_with(auth_ns.model("authorization model", LOGIN_RESP_SCHEMA))
-    def post(self):
+    def post(self) -> tuple[dict, int]:
         """request returns authorization token"""
 
         username = request.get_json().get(LOGIN_FIELD)
@@ -45,39 +49,35 @@ class Login(Resource):
 
         # Check user if exists
         if is_user_exists(username):
-            is_password_correct = check_pas(username, password)
-            if is_password_correct:
+            correct_password = check_pas(username, password)
+            if correct_password:
                 access_token = create_access_token(identity=username)
                 save_session(username, access_token)
-                return_body = {
+
+                return {
                     LOGIN_FIELD: username,
                     TOKEN_FIELD: access_token,
                     IS_SUCCESS_FIELD: True,
                     MESSAGE_FIELD: None,
-                }
+                }, 200
 
-                return return_body, 200
+            if not correct_password:
 
-            if not is_password_correct:
-                return_body = {
+                return {
                     LOGIN_FIELD: username,
                     TOKEN_FIELD: None,
                     IS_SUCCESS_FIELD: False,
                     MESSAGE_FIELD: Errors.INVALID_PASSWORD.text(),
-                }
-                return return_body, 401
+                }, 401
 
         if not is_user_exists(username):
-            return_body = {
+
+            return {
                 LOGIN_FIELD: username,
                 TOKEN_FIELD: None,
                 IS_SUCCESS_FIELD: False,
                 MESSAGE_FIELD: Errors.USER_NOT_FOUND.text(),
-            }
-            return return_body, 401
-
-        # Как сохранять токен активной сессии пользователя?
-        # Как распределять права доступа пользователей?
+            }, 401
 
         return {}, 400
 
@@ -94,6 +94,8 @@ class Logout(Resource):
         """request for revoking the user's token"""
 
         try:
+            user_name = get_jwt_identity()
+            finish_session(user_name)
             return_body = {"is_success": True}
             return return_body, 200
 

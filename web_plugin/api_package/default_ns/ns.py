@@ -2,11 +2,13 @@
 
 from flask import request
 from flask_cors import cross_origin
-from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restx import Namespace, Resource
 from pydantic import ValidationError
 
-from web_plugin.api_package.default_ns.ns_schemas import HELLO_RETURN_SCHEMA
+from web_plugin.api_package.common_schemas.common_schemas import (
+    COMMON_RETURN_SCHEMA,
+)
 from web_plugin.api_package.default_ns.params_schemas import HelloParams
 from web_plugin.api_package.default_ns.urls import GET_HELLO_URL
 
@@ -28,15 +30,10 @@ class Hello(Resource):
     @cross_origin()
     @jwt_required()
     @default_ns.doc("returns hello schema")
-    @default_ns.marshal_with(default_ns.model("hello schema", HELLO_RETURN_SCHEMA))
+    @default_ns.marshal_with(default_ns.model("hello schema", COMMON_RETURN_SCHEMA))
     def get(self):
         """request returns greetings to user"""
         current_user = get_jwt_identity()
-
-        jwt_data = get_jwt()  # Полный payload токена
-        print(f"User: {current_user}")
-        print(f"JWT data: {jwt_data}")
-
         return_msg = "Hello world!"
         try:
             # Validate request params

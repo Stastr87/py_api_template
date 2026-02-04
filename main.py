@@ -7,10 +7,10 @@ from flask_sslify import SSLify
 
 from api_extension import open_api
 from env.flask_config import set_custom_config
+from src.hashmap.password_hash_map import UserPasswordHashMap
 
 app = Flask(__name__)
 open_api.init_app(app)
-
 
 # set custom config placed in env/flask_config.py
 set_custom_config(app)
@@ -39,6 +39,23 @@ cors = CORS(app)
 # Flask-JWT-Extended предлагает гибкую настройку истечения
 # срока действия токенов, обеспечивая надежный подход к управлению токенами.
 jwt = JWTManager(app)
+
+
+@jwt.additional_claims_loader
+def add_claims_to_access_token(identity):
+    """
+    Автоматически добавляет claims в каждый создаваемый access токен
+    identity - это то, что передали в create_access_token(identity=...)
+    """
+    users_db = UserPasswordHashMap()
+    users_db.load_credentials()
+    user = users_db.get(identity)
+    if user:
+        return {
+            "role": user.role.value,
+        }
+    return {}
+
 
 # Расширение Flask-SSLify – это простой способ реализовать HTTPS в
 # приложении Flask.

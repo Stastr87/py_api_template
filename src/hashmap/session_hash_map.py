@@ -14,6 +14,7 @@ class SessionInfo:
     login: str
     token: str
     expires_in: str
+    is_revoked: int
 
 
 class SessionInfoHashMap(HashMap):
@@ -31,6 +32,7 @@ class SessionInfoHashMap(HashMap):
                         session[0][1].login,
                         session[0][1].token,
                         session[0][1].expires_in,
+                        session[0][1].is_revoked,
                     ]
                 )
         write_data_to_csv_file(
@@ -48,19 +50,26 @@ class SessionInfoHashMap(HashMap):
         self.buckets = [[] for _ in range(self.size)]
 
         for item in data:
-            user, login, token, expire_in = item
+            user, login, token, expire_in, is_revoked = item
             index = self._hash(user)
             bucket = self.buckets[index]
 
             # Check if key already exists
             for i, (k, _) in enumerate(bucket):
                 if k == user:
-                    bucket[i] = (user, SessionInfo(login, token, expire_in))
+                    bucket[i] = (
+                        user,
+                        SessionInfo(login, token, expire_in, int(is_revoked)),
+                    )
                     return
 
             # Add new key-value pair
             if index <= self.size:
-                bucket.append((user, SessionInfo(login, token, expire_in)))
+                bucket.append(
+                    (user, SessionInfo(login, token, expire_in, int(is_revoked)))
+                )
             else:
                 self.size *= 2
-                bucket.append((user, SessionInfo(login, token, expire_in)))
+                bucket.append(
+                    (user, SessionInfo(login, token, expire_in, int(is_revoked)))
+                )
